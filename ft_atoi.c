@@ -1,25 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   talk.h                                             :+:      :+:    :+:   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abhmidat <abhmidat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/09 21:54:48 by abhmidat          #+#    #+#             */
-/*   Updated: 2025/03/17 02:03:40 by abhmidat         ###   ########.fr       */
+/*   Created: 2024/10/21 23:29:09 by abhmidat          #+#    #+#             */
+/*   Updated: 2025/03/17 02:04:57 by abhmidat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TALK_H
-# define TALK_H
+#include "talk.h"
 
-# define MAX_BITS 8
+int	ft_atoi(const char *str)
+{
+	long	i;
+	long	r;
+	int		c;
 
-# include <stdio.h>
-# include <unistd.h>
-# include <signal.h>
-# include <stdlib.h>
-# include <errno.h>
-
-int	ft_atoi(const char *str);
-#endif
+	i = 0;
+	r = 0;
+	c = 1;
+	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			c = -1;
+		i++;
+	}
+	while (str[i] >= 48 && str[i] <= 57)
+	{
+		r = r * 10 + str[i] - 48;
+		i++;
+	}
+	return (r * c);
+}

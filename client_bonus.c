@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.c                                           :+:      :+:    :+:   */
+/*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abhmidat <abhmidat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/16 22:21:35 by abhmidat          #+#    #+#             */
-/*   Updated: 2025/03/17 02:04:09 by abhmidat         ###   ########.fr       */
+/*   Created: 2025/03/17 01:52:59 by abhmidat          #+#    #+#             */
+/*   Updated: 2025/03/17 02:22:41 by abhmidat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,18 +44,19 @@ void	convert_str_to_bit_and_send(pid_t pid, char *str)
 		}
 		i++;
 	}
+	write(1, "yessir !\n", 9);
 }
 
 int	main(int ac, char **av)
 {
 	pid_t	server_pid;
 
-	server_pid = atoi(av[1]);
 	if (ac != 3)
 	{
 		printf("Invalid input\n");
 		exit(1);
 	}
+	server_pid = atoi(av[1]);
 	if (kill(server_pid, 0) == -1 && errno == ESRCH)
 	{
 		printf("Invalid pid\n");
