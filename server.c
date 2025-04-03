@@ -5,53 +5,64 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abhmidat <abhmidat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/16 22:10:24 by abhmidat          #+#    #+#             */
-/*   Updated: 2025/03/17 01:49:19 by abhmidat         ###   ########.fr       */
+/*   Created: 2025/02/08 16:59:49 by hakader           #+#    #+#             */
+/*   Updated: 2025/04/03 19:10:31 by abhmidat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "talk.h"
+#include "minitalk.h"
 
-void	handle_signal(int sig, siginfo_t *info, void *content)
+void	reset_int(int *bits)
 {
-	static unsigned char	received_char;
-	static int				bit_count;
-	static int				last_pid;
+	int	i;
 
-	(void)content;
+	i = 0;
+	while (i < 8)
+		bits[i++] = 0;
+}
+
+void	sig_handler(int sig, siginfo_t *info, void *context)
+{
+	static int	bits[8] = {0};
+	static int	i;
+	static int	last_pid;
+
+	int (result), (j);
+	(void)context;
 	if (last_pid != info->si_pid)
 	{
-		received_char = 0;
-		bit_count = 0;
-		last_pid = info->si_pid;
+		(reset_int(bits)), (last_pid = info->si_pid);
+		i = 0;
 	}
 	if (sig == SIGUSR1)
-		received_char = received_char << 1;
+		bits[i] = 1;
 	else if (sig == SIGUSR2)
-		received_char = (received_char << 1) | 1;
-	bit_count++;
-	if (bit_count == 8)
+		bits[i] = 0;
+	i++;
+	if (i == 8)
 	{
-		if (received_char == '\0')
-			write(1, "\n", 1);
-		else
-			write(1, &received_char, 1);
-		received_char = 0;
-		bit_count = 0;
+		result = 0;
+		j = 0;
+		while (j < 8)
+			result = result * 2 + bits[j++];
+		write(1, &result, 1);
+		i = 0;
 	}
 }
 
-int	main(void)
+int	main(int ac, char **av)
 {
-	struct sigaction	sa;
+	struct sigaction	sig;
 
-	printf("%d\n", getpid());
-	sa.sa_flags = SA_SIGINFO;
-	sa.sa_sigaction = handle_signal;
-	sigemptyset(&sa.sa_mask);
-	sigaction(SIGUSR1, &sa, NULL);
-	sigaction(SIGUSR2, &sa, NULL);
+	(void)av;
+	if (ac != 1)
+		(write(2, "\n", 1)), (exit (1));
+	ft_putnbr(getpid());
+	write(1, "\n", 1);
+	sig.sa_flags = SA_SIGINFO;
+	sig.sa_sigaction = sig_handler;
+	sigaction(SIGUSR1, &sig, NULL);
+	sigaction(SIGUSR2, &sig, NULL);
 	while (1)
-		pause();
-	return (0);
+		;
 }

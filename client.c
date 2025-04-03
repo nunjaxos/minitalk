@@ -5,42 +5,58 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abhmidat <abhmidat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/16 22:21:35 by abhmidat          #+#    #+#             */
-/*   Updated: 2025/03/17 02:04:09 by abhmidat         ###   ########.fr       */
+/*   Created: 2025/02/08 16:37:21 by hakader           #+#    #+#             */
+/*   Updated: 2025/04/03 18:04:35 by abhmidat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "talk.h"
+#include "minitalk.h"
+
+void	char_bin(unsigned char c, int bits[8])
+{
+	int		i;
+
+	i = 8;
+	while (i--)
+	{
+		bits[i] = c & 1;
+		c >>= 1;
+	}
+}
 
 void	send_bit(pid_t pid, int bit)
 {
-	if (bit == 0)
-		kill(pid, SIGUSR1);
-	else
-		kill(pid, SIGUSR2);
+	if (bit == 1)
+	{
+		if (kill(pid, SIGUSR1))
+		{
+			write(2, "invalid PID\n", 12);
+			exit(1);
+		}
+	}
+	else if (kill(pid, SIGUSR2))
+	{
+		write(2, "invalid PID\n", 12);
+		exit(1);
+	}
+	usleep(150);
 }
 
-void	convert_str_to_bit_and_send(pid_t pid, char *str)
+void	send_signals(pid_t pid, char *str)
 {
-	int				i;
-	int				bit;
-	unsigned char	character;
-	int				current_bit;
+	int			i;
+	int			j;
+	int			bits[8];
 
 	i = 0;
 	while (str[i])
 	{
-		character = str[i];
-		bit = 128;
-		while (bit)
+		char_bin(str[i], bits);
+		j = 0;
+		while (j < 8)
 		{
-			if (character & bit)
-				current_bit = 1;
-			else
-				current_bit = 0;
-			send_bit(pid, current_bit);
-			usleep(150);
-			bit /= 2;
+			send_bit(pid, bits[j]);
+			j++;
 		}
 		i++;
 	}
@@ -48,20 +64,19 @@ void	convert_str_to_bit_and_send(pid_t pid, char *str)
 
 int	main(int ac, char **av)
 {
-	pid_t	server_pid;
+	pid_t	pid;
 
-	server_pid = atoi(av[1]);
 	if (ac != 3)
 	{
-		printf("Invalid input\n");
+		write(1, "Invalid input\n", 14);
 		exit(1);
 	}
-	if (kill(server_pid, 0) == -1 && errno == ESRCH)
+	pid = ft_atoi(av[1]);
+	if (pid < 0)
 	{
-		printf("Invalid pid\n");
+		write(1, "Invalid PID\n", 12);
 		exit(1);
 	}
-	server_pid = (pid_t)ft_atoi(av[1]);
-	convert_str_to_bit_and_send(server_pid, av[2]);
+	send_signals(pid, av[2]);
 	return (0);
 }

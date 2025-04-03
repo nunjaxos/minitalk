@@ -1,25 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   talk.h                                             :+:      :+:    :+:   */
+/*   minitalk_bonus.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abhmidat <abhmidat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hakader <hakader@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/09 21:54:48 by abhmidat          #+#    #+#             */
-/*   Updated: 2025/03/17 02:03:40 by abhmidat         ###   ########.fr       */
+/*   Created: 2025/02/05 15:28:53 by hakader           #+#    #+#             */
+/*   Updated: 2025/02/19 12:01:13 by hakader          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TALK_H
-# define TALK_H
+#ifndef MINITALK_BONUS_H
+# define MINITALK_BONUS_H
 
-# define MAX_BITS 8
-
+# include <signal.h>
 # include <stdio.h>
 # include <unistd.h>
-# include <signal.h>
+# include <sys/types.h>
 # include <stdlib.h>
-# include <errno.h>
+# include <string.h>
 
-int	ft_atoi(const char *str);
+int		ft_atoi(const char *str);
+void	ft_putnbr(int n);
+void	ft_putchar(char c);
+
 #endif
